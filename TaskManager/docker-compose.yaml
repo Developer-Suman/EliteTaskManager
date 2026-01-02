@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: Web_sqlserver
+    environment:
+      SA_PASSWORD: "Web@123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+
+
+  app:
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    # image: Web_app
+    image: developersumaney/Web:latest
+    container_name: Web_container
+    environment:
+      DB_HOST: db                         # Hostname for the SQL Server service
+      DB_USER: sa                         # SQL Server user (SA user)
+      DB_PASSWORD: Web@123    # SQL Server user password
+      DB_NAME: Web         # Name of the database
+      ConnectionStrings__DefaultConnection: "Server=db;Database=Web;User Id=sa;Password=Web@123;TrustServerCertificate=True;Encrypt=False;"
+      
+    depends_on:
+      - db                                # Ensure that SQL Server starts before the app
+    ports:
+      - "8080:80"                         # Map port 80 from container to host
+
+volumes:
+  sqlserver_data:
+
