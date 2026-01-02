@@ -32,8 +32,6 @@ namespace Project.DLL.Models
         public string BranchId { get; set; }
         [ForeignKey("BranchId")]
         public Branch Branch { get; set; }
-
-        public ICollection<Nijamati> Nijamati { get; set; }
         
 
     }

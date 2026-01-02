@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Project.DLL.Models;
+using Project.DLL.Models.Task;
+using Project.DLL.Models.Task.SetUp;
+using Serilog.Parsing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,29 +22,19 @@ namespace Project.DLL.DbContext
             
         }
 
-      
+        #region Task
+        public DbSet<NickName> NickNames { get; set; }
+        public DbSet<ProjectDetails> ProjectDetails { get; set; }
+        public DbSet<TaskDetails> TaskDetails { get; set; }
+        #endregion
+
+
         public DbSet<ApplicationUsers> ApplicationUsers { get; set; }
         public DbSet<Department> Departments { get; set; }
-        public DbSet<Nashu> Nashu { get; set; }
         public DbSet<UserDepartment> UserDepartments { get; set; }
-
-
-        public DbSet<Signature> Signatures { get; set; }
-        public DbSet<Certificate> Certificates { get; set; }
         public DbSet<Documents> Documents { get; set; }
-        public DbSet<Citizenship> Citizenships { get; set; }
-
         public DbSet<UserData> UserDatas { get; set; }
-
-        public DbSet<CertificateImages> CertificateImages { get; set; }
-
-        public DbSet<CitizenshipImages> CitizenshipImages { get; set; }
-
         public DbSet<Branch> Branches { get; set; }
-
-        public DbSet<Nijamati> Nijamatis { get; set; }
-
-
         public DbSet<ControllerAction> ControllerActions { get; set; }
 
         public DbSet<UserControllerAction> UserControllerActions { get; set; }    
@@ -68,35 +61,32 @@ namespace Project.DLL.DbContext
         {
             base.OnModelCreating(builder);
 
-            #region Signature and Documents(1:m)
-            builder.Entity<Signature>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.SignatureURL).IsRequired(false);
-                entity.Property(e => e.CreatedAt).IsRequired();
+            #region Task
 
-                entity.HasMany(s => s.Documents)
-                      .WithOne(d => d.Signature)
-                      .HasForeignKey(d => d.SignitureId)
-                      .OnDelete(DeleteBehavior.Cascade);
+            #region ProjectDetails and TaskDetails(1:m)
+            builder.Entity<ProjectDetails>(entity =>
+            {
+                entity.HasMany(a => a.TaskDetails)
+                      .WithOne(s => s.ProjectDetails)
+                      .HasForeignKey(a => a.ProjectDetailsId)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
 
             #endregion
 
-            #region Documents and Signiture(m:1)
-            builder.Entity<Documents>(entity =>
+            #region NickNames and TaskDetails(1:m)
+            builder.Entity<NickName>(entity =>
             {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.DocumentType).IsRequired();
-                entity.Property(e => e.CreatedAt).IsRequired();
-                entity.Property(e => e.UpdatedBy).IsRequired(false);
-
-                entity.HasOne(d => d.Signature)
-                      .WithMany(s => s.Documents)
-                      .HasForeignKey(d => d.SignitureId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                entity.HasMany(a => a.TaskDetails)
+                      .WithOne(s => s.NickName)
+                      .HasForeignKey(a => a.NickNameId)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
+
             #endregion
+
+            #endregion
+
 
             #region Branch and Department(1:m)
             builder.Entity<Branch>(entity =>
@@ -126,163 +116,6 @@ namespace Project.DLL.DbContext
                 entity.HasOne(a=>a.Branch)
                 .WithMany(a=>a.Departments)
                 .HasForeignKey(a=>a.BranchId)
-                .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            #endregion
-
-            #region Citizenship and Documents(1:m)
-            builder.Entity<Citizenship>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-
-                entity.HasMany(x => x.Documents)
-                .WithOne(x => x.Citizenship)
-                .HasForeignKey(x => x.CitizenshipId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            });
-            #endregion
-
-            #region Documents and Citizenship(m:1)
-            builder.Entity<Documents>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.HasOne(s=>s.Citizenship)
-                .WithMany(s => s.Documents)
-                .HasForeignKey(x=>x.CitizenshipId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            });
-
-            #endregion
-
-            #region Certificate and CertificateImages(1:m)
-            builder.Entity<Certificate>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Grade).IsRequired();
-                entity.Property(e => e.CreatedAt).IsRequired(false);
-                entity.Property(e => e.Type).IsRequired(false);
-                entity.Property(e => e.Board).IsRequired();
-
-                entity.HasMany(d => d.CertificateImages)
-                      .WithOne(e => e.Certificate)
-                      .HasForeignKey(d => d.CertificateId)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
-            #endregion
-
-            #region CertificateImages and Certificate(m:1)
-            builder.Entity<CertificateImages>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.CertificateImgURL).IsRequired();
-                entity.Property(e => e.CertificateId).IsRequired();
-
-                entity.HasOne(e => e.Certificate)
-                      .WithMany(e => e.CertificateImages)
-                      .HasForeignKey(e => e.CertificateId); // Corrected foreign key configuration
-            });
-            #endregion
-
-            #region Citizenship and CitizenshipImages(1:m)
-            builder.Entity<Citizenship>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.IssuedDate).IsRequired();
-                entity.Property(e => e.IssuedDistrict).IsRequired();
-                entity.Property(e => e.VdcOrMunicipality).IsRequired();
-                entity.Property(e => e.WardNumber).IsRequired();
-                entity.Property(e => e.DOB).IsRequired();
-                entity.Property(e => e.CitizenshipNumber).IsRequired();
-
-
-                entity.HasMany(d => d.CitizenshipImages)
-                .WithOne(e => e.Citizenship)
-                .HasForeignKey(d => d.CitizenshipId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            });
-
-            #endregion
-
-            #region CitizenshipImages and dCitizenship(m:1)
-            builder.Entity<CitizenshipImages>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.ImageUrl);
-                entity.Property(e => e.CreatedAt);
-                entity.Property(e => e.CitizenshipId);
-
-
-                entity.HasOne(e => e.Citizenship)
-                .WithMany(e => e.CitizenshipImages)
-                .HasForeignKey(e => e.CitizenshipId)
-                .OnDelete(DeleteBehavior.Cascade);
-            });
-            #endregion
-
-            #region Certificate and Documents(m:m)
-            builder.Entity<CertificateDocuments>()
-                .HasKey(ud => new { ud.DocumentsId, ud.CertificateId });
-
-            builder.Entity<CertificateDocuments>()
-                .HasOne(e => e.Certificate)
-                .WithMany(e => e.CertificateDocuments)
-                .HasForeignKey(ud => ud.CertificateId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<CertificateDocuments>()
-                .HasOne(e => e.Documents)
-                .WithMany(e => e.certificateDocuments)
-                .HasForeignKey(ud => ud.DocumentsId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            #endregion
-
-            #region Nijamati and Department(1:m)
-
-            builder.Entity<Nijamati>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.NijamatiName).IsRequired();
-
-                entity.HasOne(x=>x.Department)
-                .WithMany(x=>x.Nijamati)
-                .HasForeignKey(x=>x.DepartmentId)
-                .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            #endregion
-
-            #region Department and Nijamati(m:1)
-            builder.Entity<Department>(entity =>
-            {
-                entity.HasMany(x=>x.Nijamati)
-                .WithOne(x=>x.Department)
-                .HasForeignKey(x=>x.DepartmentId)
-                .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            #endregion
-
-            #region Nijamati and Documents(m:1)
-            builder.Entity<Nijamati>(entity =>
-            {
-                entity.HasOne(a=>a.Documents)
-                .WithMany(x => x.Nijamatis)
-                .HasForeignKey(d => d.DocumentsId)
-                .OnDelete(DeleteBehavior.Cascade);
-            });
-            #endregion
-
-            #region Documents and Nijamati(1:m)
-            builder.Entity<Documents>(entity =>
-            {
-                entity.HasMany(x=>x.Nijamatis)
-                .WithOne(x=>x.Documents)
-                .HasForeignKey(f=>f.DocumentsId)
                 .OnDelete(DeleteBehavior.Cascade);
             });
 
@@ -356,21 +189,6 @@ namespace Project.DLL.DbContext
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
             #endregion
-
-
-
-            #region Citizenship and DocumentsImages(1:m)
-            builder.Entity<Citizenship>()
-                .HasMany(c => c.CitizenshipImages)
-                .WithOne(cd => cd.Citizenship)
-                .HasForeignKey(x => x.CitizenshipId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            #endregion
-
-
-
-
 
             #region Menu and SubModule(m:1)
             builder.Entity<Menu>(entity =>

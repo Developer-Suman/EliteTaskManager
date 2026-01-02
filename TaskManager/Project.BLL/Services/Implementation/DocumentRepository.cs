@@ -116,98 +116,100 @@ namespace Project.BLL.Services.Implementation
 
         public async Task<Result<DocumentsGetDTOs>> SaveDocuments(DocumentsCreateDTOs documentsCreateDTOs, string userId)
         {
-            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-            {
-                try
-                {
-                    await _memoryCacheRepository.RemoveAsync(CacheKeys.Documents);
+            throw new Exception("An error occured while fetching all data");
+            //using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            //{
+            //    try
+            //    {
+            //        await _memoryCacheRepository.RemoveAsync(CacheKeys.Documents);
 
-                    var userDataId = await _unitOfWork.Repository<UserData>().GetByIdAsync(userId);
-                    string newId = Guid.NewGuid().ToString();
-                    var documentsData = new Documents(
-                        newId,
-                        documentsCreateDTOs.DocumentType,
-                        DateTime.Now.ToString(),
-                        documentsCreateDTOs.UpdatedBy,
-                        documentsCreateDTOs.SignitureId,
-                        documentsCreateDTOs.CitizenshipId,
-                        userDataId.Id
-                        );
+            //        var userDataId = await _unitOfWork.Repository<UserData>().GetByIdAsync(userId);
+            //        string newId = Guid.NewGuid().ToString();
+            //        var documentsData = new Documents(
+            //            newId,
+            //            documentsCreateDTOs.DocumentType,
+            //            DateTime.Now.ToString(),
+            //            documentsCreateDTOs.UpdatedBy,
+            //            documentsCreateDTOs.SignitureId,
+            //            documentsCreateDTOs.CitizenshipId,
+            //            userDataId.Id
+            //            );
 
-                    if (documentsData is null)
-                    {
-                        return Result<DocumentsGetDTOs>.Failure("Error occured while mapping");
+            //        if (documentsData is null)
+            //        {
+            //            return Result<DocumentsGetDTOs>.Failure("Error occured while mapping");
 
-                    }
-                    await _unitOfWork.Repository<Documents>().AddAsync(documentsData);
-
-         
-
-                    var certificateDocuments = documentsCreateDTOs
-                        .certificateIds
-                        .Select(certificateId => new CertificateDocuments(
-                            Guid.NewGuid().ToString(),
-                            newId,
-                            certificateId
-                            )).ToList();
-
-                    await _unitOfWork.Repository<CertificateDocuments>().AddRange(certificateDocuments);
-
-                    await _unitOfWork.SaveChangesAsync();
-
-                    var resultDTOs = new DocumentsGetDTOs(
-                        documentsData.Id,
-                        documentsData.DocumentType,
-                        documentsData.UpdatedBy,
-                        documentsData.CreatedAt,
-                        documentsData.SignitureId,
-                        documentsData.CitizenshipId,
-                        documentsData.UserDataId,
-                        certificateDocuments.Select(x=>x.CertificateId).ToList()
-
-                        );
-
-                    scope.Complete();
-
-                    return Result<DocumentsGetDTOs>.Success(_mapper.Map<DocumentsGetDTOs>(resultDTOs));
+            //        }
+            //        await _unitOfWork.Repository<Documents>().AddAsync(documentsData);
 
 
-                }
-                catch (Exception ex)
-                {
-                    scope.Dispose();
-                    throw new Exception("An error occured while Saving Data");
-                }
-            }
+
+            //        var certificateDocuments = documentsCreateDTOs
+            //            .certificateIds
+            //            .Select(certificateId => new CertificateDocuments(
+            //                Guid.NewGuid().ToString(),
+            //                newId,
+            //                certificateId
+            //                )).ToList();
+
+            //        await _unitOfWork.Repository<CertificateDocuments>().AddRange(certificateDocuments);
+
+            //        await _unitOfWork.SaveChangesAsync();
+
+            //        var resultDTOs = new DocumentsGetDTOs(
+            //            documentsData.Id,
+            //            documentsData.DocumentType,
+            //            documentsData.UpdatedBy,
+            //            documentsData.CreatedAt,
+            //            documentsData.SignitureId,
+            //            documentsData.CitizenshipId,
+            //            documentsData.UserDataId,
+            //            certificateDocuments.Select(x=>x.CertificateId).ToList()
+
+            //            );
+
+            //        scope.Complete();
+
+            //        return Result<DocumentsGetDTOs>.Success(_mapper.Map<DocumentsGetDTOs>(resultDTOs));
+
+
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        scope.Dispose();
+            //        throw new Exception("An error occured while Saving Data");
+            //    }
+            //}
         }
 
         public async Task<Result<DocumentsGetDTOs>> UpdateDocuments(string DocumentsId, DocumentsUpdateDTOs documentsUpdateDTOs)
         {
-            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-            {
-                try
-                {
-                    await _memoryCacheRepository.RemoveAsync(CacheKeys.Documents);
-                    var documentsDataToBeUpdated = await _unitOfWork.Repository<Signature>().GetByIdAsync(DocumentsId);
-                    if (documentsDataToBeUpdated is null)
-                    {
-                        return Result<DocumentsGetDTOs>.Failure("NotFound", "Documents are not Found");
-                    }
+            throw new Exception("An error occured while fetching all data");
+            //using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            //{
+            //    try
+            //    {
+            //        await _memoryCacheRepository.RemoveAsync(CacheKeys.Documents);
+            //        var documentsDataToBeUpdated = await _unitOfWork.Repository<Signature>().GetByIdAsync(DocumentsId);
+            //        if (documentsDataToBeUpdated is null)
+            //        {
+            //            return Result<DocumentsGetDTOs>.Failure("NotFound", "Documents are not Found");
+            //        }
 
-                    //Builk Update 
-                    _mapper.Map(documentsUpdateDTOs, documentsDataToBeUpdated);
-                    await _unitOfWork.SaveChangesAsync();
-                    scope.Complete();
+            //        //Builk Update 
+            //        _mapper.Map(documentsUpdateDTOs, documentsDataToBeUpdated);
+            //        await _unitOfWork.SaveChangesAsync();
+            //        scope.Complete();
 
-                    return Result<DocumentsGetDTOs>.Success(_mapper.Map<DocumentsGetDTOs>(documentsUpdateDTOs));
+            //        return Result<DocumentsGetDTOs>.Success(_mapper.Map<DocumentsGetDTOs>(documentsUpdateDTOs));
 
-                }
-                catch (Exception ex)
-                {
-                    scope.Dispose();
-                    throw new Exception("An error occured while updating");
-                }
-            }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        scope.Dispose();
+            //        throw new Exception("An error occured while updating");
+            //    }
+            //}
         }
 
       

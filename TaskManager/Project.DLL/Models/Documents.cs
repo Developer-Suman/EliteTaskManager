@@ -29,7 +29,6 @@ namespace Project.DLL.Models
             SignitureId = signitureId;
             CitizenshipId = citizenshipId;
             UserDataId = userDataId;
-            certificateDocuments = new List<CertificateDocuments>();
         }
         public string DocumentType { get; set;}
         public string CreatedAt { get; set; }
@@ -44,15 +43,6 @@ namespace Project.DLL.Models
         [ForeignKey("UserDataId")]
 
         public virtual UserData UserDatas { get; set; }
-        [ForeignKey("CitizenshipId")]
-        public Citizenship Citizenship { get; set; }
-        [ForeignKey("SignitureId")]
-
-        public Signature Signature { get; set; }
-
-        public ICollection<Nijamati> Nijamatis { get; set; }
- 
-        public ICollection<CertificateDocuments> certificateDocuments { get; set; }
 
     }
 }
