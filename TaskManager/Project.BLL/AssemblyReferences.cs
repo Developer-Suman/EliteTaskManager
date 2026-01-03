@@ -80,6 +80,7 @@ namespace Project.BLL
             services.AddScoped<IOtpService, OtpServices>();
             services.AddHttpContextAccessor();
             services.AddTransient<ICryptography, Cryptography>();
+            services.AddScoped<ITaskServices, TaskServices>();
 
 
 
