@@ -68,5 +68,42 @@ namespace Project.BLL.Services.Implementation
 
             }
         }
+
+        public async Task<Result<ProjectDetailsDTOs>> AddProjectDetails(ProjectDetailsDTOs projectDetailsDTOs)
+        {
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+                    string newId = Guid.NewGuid().ToString();
+                    var projectDetails = new ProjectDetails(
+                        newId,
+                        projectDetailsDTOs.name,
+                        projectDetailsDTOs.description,
+                        projectDetailsDTOs.createdAt
+                        );
+
+                    await _unitOfWork.Repository<ProjectDetails>().AddAsync(projectDetails);
+                    await _unitOfWork.SaveChangesAsync();
+                    var resultDTOs = new ProjectDetailsDTOs(
+                         projectDetails.Name,
+                         projectDetails.Description,
+                         projectDetails.CreatedAt
+
+                     );
+                    scope.Complete();
+
+                    return Result<ProjectDetailsDTOs>.Success(resultDTOs);
+
+                }
+                catch (Exception ex)
+                {
+                    scope.Dispose();
+
+                    throw new Exception("An exception occured while Adding");
+                }
+
+            }
+        }
     }
 }

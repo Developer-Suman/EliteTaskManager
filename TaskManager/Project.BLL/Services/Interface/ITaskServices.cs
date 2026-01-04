@@ -11,5 +11,6 @@ namespace Project.BLL.Services.Interface
     public interface ITaskServices
     {
         Task<Result<NickNameDTOs>> AddNickName(NickNameDTOs nickNameDTOs);
+        Task<Result<ProjectDetailsDTOs>> AddProjectDetails(ProjectDetailsDTOs projectDetailsDTOs);
     }
 }
