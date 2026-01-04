@@ -29,6 +29,21 @@ namespace Web.Controllers.TaskDetails
 
         }
 
+        #region ProjectDetails
+        [HttpPost("AddProjectDetails")]
+        public async Task<IActionResult> AddProjectDetails([FromBody] ProjectDetailsDTOs projectDetailsDTOs)
+        {
+            var addProjectDetails = await _taskServices.AddProjectDetails(projectDetailsDTOs);
+            #region switch
+            return addProjectDetails switch
+            {
+                { IsSuccess: true, Data: not null } => CreatedAtAction(nameof(AddProjectDetails), addProjectDetails.Data),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(addProjectDetails.Errors),
+                _ => BadRequest("Invalid Some Fields")
+            };
+            #endregion
+        }
+        #endregion
         #region NickName
         [HttpPost("AddNickName")]
         public async Task<IActionResult> AddNickName([FromBody] NickNameDTOs nickNameDTOs)
