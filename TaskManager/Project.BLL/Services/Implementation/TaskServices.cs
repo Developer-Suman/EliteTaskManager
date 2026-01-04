@@ -1,15 +1,18 @@
 ﻿using AutoMapper;
 using Project.BLL.DTOs.Branch;
+using Project.BLL.DTOs.Pagination;
 using Project.BLL.DTOs.Task;
 using Project.BLL.Services.Interface;
 using Project.DLL.Abstraction;
 using Project.DLL.DbContext;
 using Project.DLL.Models;
+using Project.DLL.Models.Task;
 using Project.DLL.Models.Task.SetUp;
 using Project.DLL.RepoInterface;
 using Project.DLL.Static.Cache;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -103,6 +106,72 @@ namespace Project.BLL.Services.Implementation
                     throw new Exception("An exception occured while Adding");
                 }
 
+            }
+        }
+
+        public async Task<Result<TaskDetailsDTOs>> AddTaskDetails(TaskDetailsDTOs taskDetailsDTOs)
+        {
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+                    string newId = Guid.NewGuid().ToString();
+                    var taskDetails = new TaskDetails(
+                        newId,
+                        taskDetailsDTOs.nickNameId,
+                        taskDetailsDTOs.title,
+                        taskDetailsDTOs.taskStatus,
+                        taskDetailsDTOs.projectDetailsId,
+                        taskDetailsDTOs.taskPriority,
+                        taskDetailsDTOs.taskReviewed,
+                        taskDetailsDTOs.descriptions,
+                        taskDetailsDTOs.startDate,
+                        taskDetailsDTOs.dueDate,
+                        taskDetailsDTOs.doingLink,
+                        taskDetailsDTOs.finalLink
+                        );
+
+                    await _unitOfWork.Repository<TaskDetails>().AddAsync(taskDetails);
+                    await _unitOfWork.SaveChangesAsync();
+                    var resultDTOs = _mapper.Map<TaskDetailsDTOs>(taskDetails);
+                   
+                    scope.Complete();
+
+                    return Result<TaskDetailsDTOs>.Success(resultDTOs);
+
+                }
+                catch (Exception ex)
+                {
+                    scope.Dispose();
+
+                    throw new Exception("An exception occured while Adding");
+                }
+
+            }
+        }
+
+        public async Task<Result<PagedResult<AllNickNameDTOs>>> GetAllNickName(PaginationDTOs paginationDTOs, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var nickName = await _unitOfWork.Repository<NickName>().GetAllAsyncWithPagination();
+                var nickNamePagedResult = await nickName.AsNoTracking().OrderByDescending(x=>x.CreatedAt).ToPagedResultAsync(paginationDTOs.pageIndex, paginationDTOs.pageSize, paginationDTOs.IsPagination);
+
+                if (nickNamePagedResult.Data.Items is null && nickName.Any())
+                {
+                    return Result<PagedResult<AllNickNameDTOs>>.Failure("NotFound", "NickName are not Found");
+
+                }
+
+                var nickNameResult = _mapper.Map<PagedResult<AllNickNameDTOs>>(nickNamePagedResult.Data);
+
+
+                return Result<PagedResult<AllNickNameDTOs>>.Success(nickNameResult);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occured while Fetching");
             }
         }
     }

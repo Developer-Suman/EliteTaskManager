@@ -1,4 +1,6 @@
-﻿using Project.BLL.DTOs.Task;
+﻿using Project.BLL.DTOs.Branch;
+using Project.BLL.DTOs.Pagination;
+using Project.BLL.DTOs.Task;
 using Project.DLL.Abstraction;
 using System;
 using System.Collections.Generic;
@@ -12,5 +14,7 @@ namespace Project.BLL.Services.Interface
     {
         Task<Result<NickNameDTOs>> AddNickName(NickNameDTOs nickNameDTOs);
         Task<Result<ProjectDetailsDTOs>> AddProjectDetails(ProjectDetailsDTOs projectDetailsDTOs);
+        Task<Result<TaskDetailsDTOs>> AddTaskDetails(TaskDetailsDTOs taskDetailsDTOs);
+        Task<Result<PagedResult<AllNickNameDTOs>>> GetAllNickName(PaginationDTOs paginationDTOs, CancellationToken cancellationToken);
     }
 }

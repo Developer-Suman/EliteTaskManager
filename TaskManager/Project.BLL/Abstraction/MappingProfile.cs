@@ -9,9 +9,12 @@ using Project.BLL.DTOs.Menu;
 using Project.BLL.DTOs.Municipality;
 using Project.BLL.DTOs.Pagination;
 using Project.BLL.DTOs.Province;
+using Project.BLL.DTOs.Task;
 using Project.BLL.DTOs.UserData;
 using Project.BLL.DTOs.Vdc;
 using Project.DLL.Models;
+using Project.DLL.Models.Task;
+using Project.DLL.Models.Task.SetUp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +27,14 @@ namespace Project.BLL.Abstraction
     {
         public MappingProfile() 
         {
+
+            #region TaskDetails
+            CreateMap<TaskDetailsDTOs, TaskDetails>().ReverseMap();
+            CreateMap<TaskDetailsDTOs, TaskDetails>().ReverseMap();
+
+            CreateMap<AllNickNameDTOs, NickName>().ReverseMap();
+            CreateMap<PagedResult<NickName>, PagedResult<AllNickNameDTOs>>().ReverseMap();
+            #endregion
             CreateMap<RegistrationCreateDTOs, ApplicationUsers>().ReverseMap();
             CreateMap<UserDTOs, ApplicationUsers>().ReverseMap();
             CreateMap<UserDTOs, IdentityRole>().ReverseMap();
