@@ -30,6 +30,8 @@ namespace Project.BLL.Abstraction
 
             #region TaskDetails
 
+            CreateMap<TaskDetailsGetByIdDTOs, TaskDetails>().ReverseMap();
+            CreateMap<ProjectDetailsGetByIdDTOs, ProjectDetails>().ReverseMap();
             CreateMap<NickNameGetByIdDTOs, NickName>().ReverseMap();
 
             CreateMap<TaskDetailsDTOs, TaskDetails>().ReverseMap();

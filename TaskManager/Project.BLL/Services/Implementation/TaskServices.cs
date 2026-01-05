@@ -242,5 +242,41 @@ namespace Project.BLL.Services.Implementation
                 throw new Exception("An error occured while getting NickName");
             }
         }
+
+        public async Task<Result<ProjectDetailsGetByIdDTOs>> ProjectDetailsGetById(string ProjectDetailsId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var projectDetailsData = await _unitOfWork.Repository<ProjectDetails>().GetByIdAsync(ProjectDetailsId);
+                if (projectDetailsData is null)
+                {
+                    return Result<ProjectDetailsGetByIdDTOs>.Failure("NotFound", "projectDetailsData are not Found");
+                }
+                return Result<ProjectDetailsGetByIdDTOs>.Success(_mapper.Map<ProjectDetailsGetByIdDTOs>(projectDetailsData));
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occured while getting NickName");
+            }
+        }
+
+        public async Task<Result<TaskDetailsGetByIdDTOs>> TaskDetailsGetById(string TaskDetailsId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var taskDetailsData = await _unitOfWork.Repository<TaskDetails>().GetByIdAsync(TaskDetailsId);
+                if (taskDetailsData is null)
+                {
+                    return Result<TaskDetailsGetByIdDTOs>.Failure("NotFound", "taskDetailsData are not Found");
+                }
+                return Result<TaskDetailsGetByIdDTOs>.Success(_mapper.Map<TaskDetailsGetByIdDTOs>(taskDetailsData));
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occured while getting TaskDetails");
+            }
+        }
     }
 }
