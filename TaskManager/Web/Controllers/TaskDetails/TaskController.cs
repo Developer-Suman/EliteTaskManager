@@ -31,9 +31,53 @@ namespace Web.Controllers.TaskDetails
 
         }
 
+        #region TaskDetailsGetById
+
+        [HttpGet("TaskDetailsGetById{Id}")]
+        public async Task<IActionResult> TaskDetailsGetById([FromRoute] string Id, CancellationToken cancellationToken)
+        {
+            var taskDetailsGetByIdResultData = await _taskServices.TaskDetailsGetById(Id, cancellationToken);
+
+            #region switch
+            return taskDetailsGetByIdResultData switch
+            {
+                { IsSuccess: true, Data: not null } => new JsonResult(taskDetailsGetByIdResultData.Data, new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                }),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(taskDetailsGetByIdResultData.Errors),
+                _ => BadRequest("Invalid Data")
+            };
+            #endregion
+        }
+
+
+        #endregion
+        #region ProjectDetailsGetById
+
+        [HttpGet("ProjectDetailsGetById{Id}")]
+        public async Task<IActionResult> ProjectDetailsGetById([FromRoute] string Id, CancellationToken cancellationToken)
+        {
+            var projectDetailsGetByIdResultData = await _taskServices.ProjectDetailsGetById(Id, cancellationToken);
+
+            #region switch
+            return projectDetailsGetByIdResultData switch
+            {
+                { IsSuccess: true, Data: not null } => new JsonResult(projectDetailsGetByIdResultData.Data, new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                }),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(projectDetailsGetByIdResultData.Errors),
+                _ => BadRequest("Invalid Data")
+            };
+            #endregion
+        }
+
+
+        #endregion
         #region NickNameGetById
 
-        [HttpGet("/NickNameGetById{Id}")]
+        [HttpGet("NickNameGetById{Id}")]
         public async Task<IActionResult> NickNameGetById([FromRoute] string Id, CancellationToken cancellationToken)
         {
             var nickNameGetByIdResultData = await _taskServices.NickNameGetById(Id, cancellationToken);
