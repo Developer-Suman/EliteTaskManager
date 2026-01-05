@@ -31,6 +31,52 @@ namespace Web.Controllers.TaskDetails
 
         }
 
+        #region NickNameGetById
+
+        [HttpGet("/NickNameGetById{Id}")]
+        public async Task<IActionResult> NickNameGetById([FromRoute] string Id, CancellationToken cancellationToken)
+        {
+            var nickNameGetByIdResultData = await _taskServices.NickNameGetById(Id, cancellationToken);
+
+            #region switch
+            return nickNameGetByIdResultData switch
+            {
+                { IsSuccess: true, Data: not null } => new JsonResult(nickNameGetByIdResultData.Data, new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                }),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(nickNameGetByIdResultData.Errors),
+                _ => BadRequest("Invalid Data")
+            };
+            #endregion
+        }
+
+
+        #endregion
+
+        #region GetAllTaskDetails
+        [HttpGet("GetAllTaskDetails")]
+        public async Task<IActionResult> GetTaskDetails([FromQuery] PaginationDTOs paginationDTOs, CancellationToken cancellationToken)
+        {
+            var getTaskDetails = await _taskServices.GetAllTaskDetails(paginationDTOs, cancellationToken);
+
+
+            #region switch
+            return getTaskDetails switch
+            {
+                { IsSuccess: true, Data: not null } => new JsonResult(getTaskDetails.Data, new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                }),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(getTaskDetails.Errors),
+                _ => BadRequest("Invalid Data")
+            };
+            #endregion
+
+        }
+
+        #endregion
+
         #region GetAllProjectDetails
         [HttpGet("GetAllProjectDetails")]
         public async Task<IActionResult> GetProjectDetails([FromQuery] PaginationDTOs paginationDTOs, CancellationToken cancellationToken)
@@ -53,6 +99,7 @@ namespace Web.Controllers.TaskDetails
         }
 
         #endregion
+
         #region GetAllNickName
         [HttpGet("GetAllNickName")]
         public async Task<IActionResult> GetNickName([FromQuery] PaginationDTOs paginationDTOs, CancellationToken cancellationToken)
@@ -91,6 +138,7 @@ namespace Web.Controllers.TaskDetails
             #endregion
         }
         #endregion
+
         #region ProjectDetails
         [HttpPost("AddProjectDetails")]
         public async Task<IActionResult> AddProjectDetails([FromBody] ProjectDetailsDTOs projectDetailsDTOs)
@@ -106,6 +154,7 @@ namespace Web.Controllers.TaskDetails
             #endregion
         }
         #endregion
+
         #region NickName
         [HttpPost("AddNickName")]
         public async Task<IActionResult> AddNickName([FromBody] NickNameDTOs nickNameDTOs)
