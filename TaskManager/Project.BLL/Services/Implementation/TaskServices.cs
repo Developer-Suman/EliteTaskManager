@@ -199,5 +199,48 @@ namespace Project.BLL.Services.Implementation
                 throw new Exception("An error occured while Fetching");
             }
         }
+
+        public async Task<Result<PagedResult<AllTaskDetailsDTOs>>> GetAllTaskDetails(PaginationDTOs paginationDTOs, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var taskDetails = await _unitOfWork.Repository<TaskDetails>().GetAllAsyncWithPagination();
+                var taskDetailsPagedResult = await taskDetails.AsNoTracking().ToPagedResultAsync(paginationDTOs.pageIndex, paginationDTOs.pageSize, paginationDTOs.IsPagination);
+
+                if (taskDetailsPagedResult.Data.Items is null && taskDetails.Any())
+                {
+                    return Result<PagedResult<AllTaskDetailsDTOs>>.Failure("NotFound", "TaskDetails are not Found");
+
+                }
+
+                var taskDetailsResult = _mapper.Map<PagedResult<AllTaskDetailsDTOs>>(taskDetailsPagedResult.Data);
+
+
+                return Result<PagedResult<AllTaskDetailsDTOs>>.Success(taskDetailsResult);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occured while Fetching");
+            }
+        }
+
+        public async Task<Result<NickNameGetByIdDTOs>> NickNameGetById(string NickNameId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var nickNameData = await _unitOfWork.Repository<NickName>().GetByIdAsync(NickNameId);
+                if (nickNameData is null)
+                {
+                    return Result<NickNameGetByIdDTOs>.Failure("NotFound", "NickName are not Found");
+                }
+                return Result<NickNameGetByIdDTOs>.Success(_mapper.Map<NickNameGetByIdDTOs>(nickNameData));
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occured while getting NickName");
+            }
+        }
     }
 }
