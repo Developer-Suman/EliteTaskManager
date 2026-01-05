@@ -16,5 +16,6 @@ namespace Project.BLL.Services.Interface
         Task<Result<ProjectDetailsDTOs>> AddProjectDetails(ProjectDetailsDTOs projectDetailsDTOs);
         Task<Result<TaskDetailsDTOs>> AddTaskDetails(TaskDetailsDTOs taskDetailsDTOs);
         Task<Result<PagedResult<AllNickNameDTOs>>> GetAllNickName(PaginationDTOs paginationDTOs, CancellationToken cancellationToken);
+        Task<Result<PagedResult<AllProjectDetailsDTOs>>> GetAllProjectDetails(PaginationDTOs paginationDTOs, CancellationToken cancellationToken);
     }
 }

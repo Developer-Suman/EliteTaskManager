@@ -174,5 +174,30 @@ namespace Project.BLL.Services.Implementation
                 throw new Exception("An error occured while Fetching");
             }
         }
+
+        public async Task<Result<PagedResult<AllProjectDetailsDTOs>>> GetAllProjectDetails(PaginationDTOs paginationDTOs, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var projectDetails = await _unitOfWork.Repository<ProjectDetails>().GetAllAsyncWithPagination();
+                var projectDetailsPagedResult = await projectDetails.AsNoTracking().OrderByDescending(x => x.CreatedAt).ToPagedResultAsync(paginationDTOs.pageIndex, paginationDTOs.pageSize, paginationDTOs.IsPagination);
+
+                if (projectDetailsPagedResult.Data.Items is null && projectDetails.Any())
+                {
+                    return Result<PagedResult<AllProjectDetailsDTOs>>.Failure("NotFound", "ProjectDetails are not Found");
+
+                }
+
+                var projectDetailsResult = _mapper.Map<PagedResult<AllProjectDetailsDTOs>>(projectDetailsPagedResult.Data);
+
+
+                return Result<PagedResult<AllProjectDetailsDTOs>>.Success(projectDetailsResult);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occured while Fetching");
+            }
+        }
     }
 }

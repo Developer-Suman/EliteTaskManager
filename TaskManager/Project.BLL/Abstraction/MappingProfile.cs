@@ -32,9 +32,14 @@ namespace Project.BLL.Abstraction
             CreateMap<TaskDetailsDTOs, TaskDetails>().ReverseMap();
             CreateMap<TaskDetailsDTOs, TaskDetails>().ReverseMap();
 
+            CreateMap<AllProjectDetailsDTOs, ProjectDetails>().ReverseMap();
+            CreateMap<PagedResult<ProjectDetails>, PagedResult<AllProjectDetailsDTOs>>().ReverseMap();
+
             CreateMap<AllNickNameDTOs, NickName>().ReverseMap();
             CreateMap<PagedResult<NickName>, PagedResult<AllNickNameDTOs>>().ReverseMap();
             #endregion
+
+
             CreateMap<RegistrationCreateDTOs, ApplicationUsers>().ReverseMap();
             CreateMap<UserDTOs, ApplicationUsers>().ReverseMap();
             CreateMap<UserDTOs, IdentityRole>().ReverseMap();
