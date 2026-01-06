@@ -278,5 +278,114 @@ namespace Project.BLL.Services.Implementation
                 throw new Exception("An error occured while getting TaskDetails");
             }
         }
+
+        public async Task<Result<NickNameUpdateDTOs>> UpdateNickName(string NickNameId, NickNameUpdateDTOs nickNameUpdateDTOs)
+        {
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+                    var nickNameToBeUpdated = await _unitOfWork.Repository<NickName>().GetByIdAsync(NickNameId);
+                    if (nickNameToBeUpdated is null)
+                    {
+                        return Result<NickNameUpdateDTOs>.Failure("NotFound", "NickName are not Found");
+                    }
+                    _mapper.Map(nickNameUpdateDTOs, nickNameToBeUpdated);
+                    await _unitOfWork.SaveChangesAsync();
+
+                    var resultDTOs = new NickNameUpdateDTOs(
+                        nickNameToBeUpdated.Name,
+                        nickNameToBeUpdated.CreatedAt
+
+                        );
+                    scope.Complete();
+
+                    return Result<NickNameUpdateDTOs>.Success(_mapper.Map<NickNameUpdateDTOs>(resultDTOs));
+
+                }
+                catch (Exception ex)
+                {
+                    scope.Dispose();
+                    throw new Exception("An exception occured while Updating");
+                }
+
+            }
+        }
+
+        public async Task<Result<UpdateProjectDetailsDTOs>> UpdateProjectDetails(string ProjectDetailsId, UpdateProjectDetailsDTOs updateProjectDetailsDTOs)
+        {
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+                    var projectDetailsToBeUpdated = await _unitOfWork.Repository<ProjectDetails>().GetByIdAsync(ProjectDetailsId);
+                    if (projectDetailsToBeUpdated is null)
+                    {
+                        return Result<UpdateProjectDetailsDTOs>.Failure("NotFound", "ProjectDetails are not Found");
+                    }
+                    _mapper.Map(updateProjectDetailsDTOs, projectDetailsToBeUpdated);
+                    await _unitOfWork.SaveChangesAsync();
+
+                    var resultDTOs = new UpdateProjectDetailsDTOs(
+                        projectDetailsToBeUpdated.Name,
+                        projectDetailsToBeUpdated.Description,
+                        projectDetailsToBeUpdated.CreatedAt
+
+                        );
+                    scope.Complete();
+
+                    return Result<UpdateProjectDetailsDTOs>.Success(_mapper.Map<UpdateProjectDetailsDTOs>(resultDTOs));
+
+                }
+                catch (Exception ex)
+                {
+                    scope.Dispose();
+                    throw new Exception("An exception occured while Updating");
+                }
+
+            }
+        }
+
+        public async Task<Result<UpdateTaskDetailsDTOs>> UpdateTaskDetails(string TaskDetailsId, UpdateTaskDetailsDTOs updateTaskDetailsDTOs)
+        {
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+                    var taskDetailsToBeUpdated = await _unitOfWork.Repository<TaskDetails>().GetByIdAsync(TaskDetailsId);
+                    if (taskDetailsToBeUpdated is null)
+                    {
+                        return Result<UpdateTaskDetailsDTOs>.Failure("NotFound", "ProjectDetails are not Found");
+                    }
+                    _mapper.Map(updateTaskDetailsDTOs, taskDetailsToBeUpdated);
+                    await _unitOfWork.SaveChangesAsync();
+
+                    var resultDTOs = new UpdateTaskDetailsDTOs(
+                        taskDetailsToBeUpdated.NickNameId,
+                        taskDetailsToBeUpdated.Title,
+                        taskDetailsToBeUpdated.TaskStatus,
+                        taskDetailsToBeUpdated.ProjectDetailsId,
+                        taskDetailsToBeUpdated.TaskPriority,
+                        taskDetailsToBeUpdated.TaskReviewed,
+                        taskDetailsToBeUpdated.Descriptions,
+                        taskDetailsToBeUpdated.StartDate,
+                        taskDetailsToBeUpdated.DueDate,
+                        taskDetailsToBeUpdated.DoingLink,
+                        taskDetailsToBeUpdated.FinalLink
+
+                        );
+                    scope.Complete();
+
+                    return Result<UpdateTaskDetailsDTOs>.Success(_mapper.Map<UpdateTaskDetailsDTOs>(resultDTOs));
+
+                }
+                catch (Exception ex)
+                {
+                    scope.Dispose();
+                    throw new Exception("An exception occured while Updating");
+                }
+
+            }
+        }
     }
 }

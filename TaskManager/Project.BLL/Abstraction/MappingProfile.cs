@@ -30,12 +30,21 @@ namespace Project.BLL.Abstraction
 
             #region TaskDetails
 
+            #region TaskUpdate Mapping
+
+            CreateMap<NickNameUpdateDTOs, NickName>().ReverseMap();
+            CreateMap<UpdateProjectDetailsDTOs, ProjectDetails>().ReverseMap();
+            CreateMap<UpdateTaskDetailsDTOs, TaskDetails>().ReverseMap();
+
+            #endregion
+
+            #region TaskGetById Mapping
             CreateMap<TaskDetailsGetByIdDTOs, TaskDetails>().ReverseMap();
             CreateMap<ProjectDetailsGetByIdDTOs, ProjectDetails>().ReverseMap();
             CreateMap<NickNameGetByIdDTOs, NickName>().ReverseMap();
+            #endregion
 
-            CreateMap<TaskDetailsDTOs, TaskDetails>().ReverseMap();
-
+            #region Task GetAll Mapping
             CreateMap<AllTaskDetailsDTOs, TaskDetails>().ReverseMap();
             CreateMap<PagedResult<TaskDetails>, PagedResult<AllTaskDetailsDTOs>>().ReverseMap();
 
@@ -44,6 +53,9 @@ namespace Project.BLL.Abstraction
 
             CreateMap<AllNickNameDTOs, NickName>().ReverseMap();
             CreateMap<PagedResult<NickName>, PagedResult<AllNickNameDTOs>>().ReverseMap();
+            #endregion
+
+            CreateMap<TaskDetailsDTOs, TaskDetails>().ReverseMap();
             #endregion
 
 
