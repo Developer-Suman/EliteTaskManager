@@ -17,16 +17,22 @@ namespace Project.DLL.Models.Task.SetUp
             string id,
             string name,
             string description,
-            DateTime createdAt
+            bool isDeleted,
+            DateTime createdAt,
+            DateTime modifiedAt
             ) : base(id)
         {
             Name = name;
             Description = description;
+            IsDeleted = isDeleted;
+            CreatedAt = createdAt;
             CreatedAt = createdAt;
             TaskDetails = new List<TaskDetails>();
         }
         public string Name { get; set; }
+        public bool IsDeleted { get; set; }
         public DateTime CreatedAt { get; set; }
+        public DateTime ModifiedAt { get; set; }
         public string Description { get; set; }
         public ICollection<TaskDetails> TaskDetails { get; set; }
     }
