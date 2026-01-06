@@ -30,6 +30,24 @@ namespace Web.Controllers.TaskDetails
             _taskServices = taskServices;
 
         }
+        #region DeleteNickName
+        [HttpDelete("DeleteNickName{Id}")]
+        public async Task<IActionResult> DeleteNickName([FromRoute] string Id, CancellationToken cancellationToken)
+        {
+            var deleteNickNameResult = await _taskServices.DeleteNickName(Id, cancellationToken);
+
+            #region switch
+            return deleteNickNameResult switch
+            {
+                { IsSuccess: true, Data: not null } => NoContent(),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(deleteNickNameResult.Errors),
+                _ => BadRequest("Invalid some Fields")
+            };
+            #endregion
+        }
+
+
+        #endregion
 
         #region UpdateTaskDetails
         [HttpPatch("UpdateTaskDetails{Id}")]
@@ -52,6 +70,7 @@ namespace Web.Controllers.TaskDetails
 
 
         #endregion
+
         #region UpdateProjectDetails
         [HttpPatch("UpdateProjectDetails{Id}")]
         public async Task<IActionResult> UpdateProjectDetails([FromRoute] string Id, [FromBody] UpdateProjectDetailsDTOs updateProjectDetailsDTOs)

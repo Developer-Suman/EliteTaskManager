@@ -185,12 +185,35 @@ namespace Project.BLL.Services.Implementation
             }
         }
 
+        public async Task<Result<DeleteNickNameDTOs>> DeleteNickName(string NickNameId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var nickName = await _unitOfWork.Repository<NickName>().GetByIdAsync(NickNameId);
+                if (nickName is null)
+                {
+                    return Result<DeleteNickNameDTOs>.Failure("NotFounds", "NickName cannot be Found");
+
+                }
+
+                nickName.IsDeleted = true;
+                _unitOfWork.Repository<NickName>().Update(nickName);
+                await _unitOfWork.SaveChangesAsync();
+                return Result<DeleteNickNameDTOs>.Success(_mapper.Map<DeleteNickNameDTOs>(nickName));
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occured while Deleting");
+            }
+        }
+
         public async Task<Result<PagedResult<AllNickNameDTOs>>> GetAllNickName(PaginationDTOs paginationDTOs, CancellationToken cancellationToken)
         {
             try
             {
                 var nickName = await _unitOfWork.Repository<NickName>().GetAllAsyncWithPagination();
-                var nickNamePagedResult = await nickName.AsNoTracking().OrderByDescending(x=>x.CreatedAt).ToPagedResultAsync(paginationDTOs.pageIndex, paginationDTOs.pageSize, paginationDTOs.IsPagination);
+                var nickNamePagedResult = await nickName.AsNoTracking().Where(x=>x.IsDeleted == true).OrderByDescending(x=>x.CreatedAt).ToPagedResultAsync(paginationDTOs.pageIndex, paginationDTOs.pageSize, paginationDTOs.IsPagination);
 
                 if (nickNamePagedResult.Data.Items is null && nickName.Any())
                 {
@@ -215,7 +238,7 @@ namespace Project.BLL.Services.Implementation
             try
             {
                 var projectDetails = await _unitOfWork.Repository<ProjectDetails>().GetAllAsyncWithPagination();
-                var projectDetailsPagedResult = await projectDetails.AsNoTracking().OrderByDescending(x => x.CreatedAt).ToPagedResultAsync(paginationDTOs.pageIndex, paginationDTOs.pageSize, paginationDTOs.IsPagination);
+                var projectDetailsPagedResult = await projectDetails.AsNoTracking().Where(x=>x.IsDeleted == true).OrderByDescending(x => x.CreatedAt).ToPagedResultAsync(paginationDTOs.pageIndex, paginationDTOs.pageSize, paginationDTOs.IsPagination);
 
                 if (projectDetailsPagedResult.Data.Items is null && projectDetails.Any())
                 {
@@ -240,7 +263,7 @@ namespace Project.BLL.Services.Implementation
             try
             {
                 var taskDetails = await _unitOfWork.Repository<TaskDetails>().GetAllAsyncWithPagination();
-                var taskDetailsPagedResult = await taskDetails.AsNoTracking().ToPagedResultAsync(paginationDTOs.pageIndex, paginationDTOs.pageSize, paginationDTOs.IsPagination);
+                var taskDetailsPagedResult = await taskDetails.AsNoTracking().Where(x=>x.IsDeleted == true).ToPagedResultAsync(paginationDTOs.pageIndex, paginationDTOs.pageSize, paginationDTOs.IsPagination);
 
                 if (taskDetailsPagedResult.Data.Items is null && taskDetails.Any())
                 {
@@ -321,6 +344,7 @@ namespace Project.BLL.Services.Implementation
                 try
                 {
                     var nickNameToBeUpdated = await _unitOfWork.Repository<NickName>().GetByIdAsync(NickNameId);
+                    nickNameToBeUpdated.ModifiedAt = DateTime.UtcNow;
                     if (nickNameToBeUpdated is null)
                     {
                         return Result<NickNameUpdateDTOs>.Failure("NotFound", "NickName are not Found");
@@ -354,6 +378,7 @@ namespace Project.BLL.Services.Implementation
                 try
                 {
                     var projectDetailsToBeUpdated = await _unitOfWork.Repository<ProjectDetails>().GetByIdAsync(ProjectDetailsId);
+                    projectDetailsToBeUpdated.ModifiedAt = DateTime.UtcNow;
                     if (projectDetailsToBeUpdated is null)
                     {
                         return Result<UpdateProjectDetailsDTOs>.Failure("NotFound", "ProjectDetails are not Found");
@@ -388,6 +413,7 @@ namespace Project.BLL.Services.Implementation
                 try
                 {
                     var taskDetailsToBeUpdated = await _unitOfWork.Repository<TaskDetails>().GetByIdAsync(TaskDetailsId);
+                    taskDetailsToBeUpdated.ModifiedAt = DateTime.UtcNow;
                     if (taskDetailsToBeUpdated is null)
                     {
                         return Result<UpdateTaskDetailsDTOs>.Failure("NotFound", "ProjectDetails are not Found");
@@ -422,5 +448,6 @@ namespace Project.BLL.Services.Implementation
 
             }
         }
+
     }
 }
