@@ -26,7 +26,11 @@ namespace Project.DLL.Models.Task
             DateTime? startDate,
             DateTime? dueDate,
             string? doingLink,
-            string? finalLink
+            string? finalLink,
+            string description,
+            bool isDeleted,
+            DateTime createdAt,
+            DateTime modifiedAt
             ) : base(id)
         {
             NickNameId = nickNameId;
@@ -40,8 +44,15 @@ namespace Project.DLL.Models.Task
             DueDate = dueDate;
             FinalLink = finalLink;
             DoingLink = doingLink;
+            IsDeleted = isDeleted;
+            CreatedAt = createdAt;
+            ModifiedAt = modifiedAt;
 
         }
+
+        public bool IsDeleted { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime ModifiedAt { get; set; }
         public string? NickNameId { get; set; }
 
         public NickName? NickName { get; set; }

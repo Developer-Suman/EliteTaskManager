@@ -43,11 +43,21 @@ namespace Project.BLL.Services.Implementation
             {
                 try
                 {
+                    var existingName = await _unitOfWork.Repository<NickName>()
+                        .GetSingleAsync(x => x.Name == nickNameDTOs.name);
+
+                    if (existingName != null)
+                    {
+                        return Result<NickNameDTOs>.Failure("NotFound","Name already exists");
+                    }
+
                     string newId = Guid.NewGuid().ToString();
                     var nickName = new NickName(
                         newId,
                         nickNameDTOs.name,
-                        nickNameDTOs.createdAt
+                        false,
+                        nickNameDTOs.createdAt,
+                        default
                         );
 
                     await _unitOfWork.Repository<NickName>().AddAsync(nickName);
@@ -78,12 +88,22 @@ namespace Project.BLL.Services.Implementation
             {
                 try
                 {
+                    var existingName = await _unitOfWork.Repository<ProjectDetails>()
+                     .GetSingleAsync(x => x.Name == projectDetailsDTOs.name);
+
+                    if (existingName != null)
+                    {
+                        return Result<ProjectDetailsDTOs>.Failure("NotFound", "Name already exists");
+                    }
+
                     string newId = Guid.NewGuid().ToString();
                     var projectDetails = new ProjectDetails(
                         newId,
                         projectDetailsDTOs.name,
                         projectDetailsDTOs.description,
-                        projectDetailsDTOs.createdAt
+                        false,
+                        projectDetailsDTOs.createdAt,
+                        default
                         );
 
                     await _unitOfWork.Repository<ProjectDetails>().AddAsync(projectDetails);
@@ -115,6 +135,17 @@ namespace Project.BLL.Services.Implementation
             {
                 try
                 {
+
+                    var existingName = await _unitOfWork.Repository<TaskDetails>()
+                    .GetSingleAsync(x => x.Title == taskDetailsDTOs.title);
+
+                    if (existingName != null)
+                    {
+                        return Result<TaskDetailsDTOs>.Failure("NotFound", "Name already exists");
+                    }
+
+
+
                     string newId = Guid.NewGuid().ToString();
                     var taskDetails = new TaskDetails(
                         newId,
@@ -128,7 +159,11 @@ namespace Project.BLL.Services.Implementation
                         taskDetailsDTOs.startDate,
                         taskDetailsDTOs.dueDate,
                         taskDetailsDTOs.doingLink,
-                        taskDetailsDTOs.finalLink
+                        taskDetailsDTOs.finalLink,
+                        taskDetailsDTOs.descriptions ?? "",
+                        false,
+                        DateTime.UtcNow,
+                        default
                         );
 
                     await _unitOfWork.Repository<TaskDetails>().AddAsync(taskDetails);
