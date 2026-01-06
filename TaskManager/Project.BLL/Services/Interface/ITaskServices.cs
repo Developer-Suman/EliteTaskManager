@@ -21,5 +21,8 @@ namespace Project.BLL.Services.Interface
         Task<Result<NickNameGetByIdDTOs>> NickNameGetById(string NickNameId, CancellationToken cancellationToken);
         Task<Result<ProjectDetailsGetByIdDTOs>> ProjectDetailsGetById(string ProjectDetailsId, CancellationToken cancellationToken);
         Task<Result<TaskDetailsGetByIdDTOs>> TaskDetailsGetById(string TaskDetailsId, CancellationToken cancellationToken);
+        Task<Result<NickNameUpdateDTOs>> UpdateNickName(string NickNameId, NickNameUpdateDTOs nickNameUpdateDTOs);
+        Task<Result<UpdateProjectDetailsDTOs>> UpdateProjectDetails(string ProjectDetailsId, UpdateProjectDetailsDTOs updateProjectDetailsDTOs);
+        Task<Result<UpdateTaskDetailsDTOs>> UpdateTaskDetails(string TaskDetailsId, UpdateTaskDetailsDTOs updateTaskDetailsDTOs);
     }
 }

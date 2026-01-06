@@ -31,6 +31,71 @@ namespace Web.Controllers.TaskDetails
 
         }
 
+        #region UpdateTaskDetails
+        [HttpPatch("UpdateTaskDetails{Id}")]
+        public async Task<IActionResult> UpdateTaskDetails([FromRoute] string Id, [FromBody] UpdateTaskDetailsDTOs updateTaskDetailsDTOs)
+        {
+            var updateTaskDetailsResult = await _taskServices.UpdateTaskDetails(Id, updateTaskDetailsDTOs);
+
+            #region switch
+            return updateTaskDetailsResult switch
+            {
+                { IsSuccess: true, Data: not null } => new JsonResult(updateTaskDetailsResult.Data, new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                }),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(updateTaskDetailsResult.Errors),
+                _ => BadRequest("Invalid Id")
+            };
+            #endregion
+        }
+
+
+        #endregion
+        #region UpdateProjectDetails
+        [HttpPatch("UpdateProjectDetails{Id}")]
+        public async Task<IActionResult> UpdateProjectDetails([FromRoute] string Id, [FromBody] UpdateProjectDetailsDTOs updateProjectDetailsDTOs)
+        {
+            var updateProjectDetailsResult = await _taskServices.UpdateProjectDetails(Id, updateProjectDetailsDTOs);
+
+            #region switch
+            return updateProjectDetailsResult switch
+            {
+                { IsSuccess: true, Data: not null } => new JsonResult(updateProjectDetailsResult.Data, new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                }),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(updateProjectDetailsResult.Errors),
+                _ => BadRequest("Invalid Id")
+            };
+            #endregion
+        }
+
+
+        #endregion
+
+        #region NickNameUpdate
+        [HttpPatch("NickNameUpdate{Id}")]
+        public async Task<IActionResult> NickNameUpdate([FromRoute] string Id, [FromBody] NickNameUpdateDTOs nickNameUpdateDTOs)
+        {
+            var updateNickNameResult = await _taskServices.UpdateNickName(Id, nickNameUpdateDTOs);
+
+            #region switch
+            return updateNickNameResult switch
+            {
+                { IsSuccess: true, Data: not null } => new JsonResult(updateNickNameResult.Data, new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                }),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(updateNickNameResult.Errors),
+                _ => BadRequest("Invalid Id")
+            };
+            #endregion
+        }
+
+
+        #endregion
+
         #region TaskDetailsGetById
 
         [HttpGet("TaskDetailsGetById{Id}")]
@@ -53,6 +118,7 @@ namespace Web.Controllers.TaskDetails
 
 
         #endregion
+
         #region ProjectDetailsGetById
 
         [HttpGet("ProjectDetailsGetById{Id}")]
@@ -75,6 +141,7 @@ namespace Web.Controllers.TaskDetails
 
 
         #endregion
+
         #region NickNameGetById
 
         [HttpGet("NickNameGetById{Id}")]
