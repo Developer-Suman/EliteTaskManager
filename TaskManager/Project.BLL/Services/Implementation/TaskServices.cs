@@ -150,6 +150,28 @@ namespace Project.BLL.Services.Implementation
             }
         }
 
+        public async Task<Result<DeleteNickNameDTOs>> DeleteNickName(string NickNameId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var nickName = await _unitOfWork.Repository<NickName>().GetByIdAsync(NickNameId);
+                if (nickName is null)
+                {
+                    return Result<DeleteNickNameDTOs>.Failure("NotFounds", "NickName cannot be Found");
+
+                }
+
+                _unitOfWork.Repository<NickName>().Delete(nickName);
+                await _unitOfWork.SaveChangesAsync();
+                return Result<DeleteNickNameDTOs>.Success(_mapper.Map<DeleteNickNameDTOs>(nickName));
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occured while Deleting");
+            }
+        }
+
         public async Task<Result<PagedResult<AllNickNameDTOs>>> GetAllNickName(PaginationDTOs paginationDTOs, CancellationToken cancellationToken)
         {
             try
@@ -387,5 +409,6 @@ namespace Project.BLL.Services.Implementation
 
             }
         }
+
     }
 }
