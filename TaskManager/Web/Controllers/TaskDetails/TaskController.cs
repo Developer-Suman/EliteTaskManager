@@ -30,6 +30,45 @@ namespace Web.Controllers.TaskDetails
             _taskServices = taskServices;
 
         }
+
+        #region DeleteTaskDetails
+        [HttpDelete("DeleteTaskDetails{Id}")]
+        public async Task<IActionResult> DeleteTaskDetails([FromRoute] string Id, CancellationToken cancellationToken)
+        {
+            var deleteTaskDetailsResult = await _taskServices.DeleteTaskDetails(Id, cancellationToken);
+
+            #region switch
+            return deleteTaskDetailsResult switch
+            {
+                { IsSuccess: true, Data: not null } => NoContent(),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(deleteTaskDetailsResult.Errors),
+                _ => BadRequest("Invalid some Fields")
+            };
+            #endregion
+        }
+
+
+        #endregion
+
+        #region DeleteProjectDetails
+        [HttpDelete("DeleteProjectDetails{Id}")]
+        public async Task<IActionResult> DeleteProjectDetails([FromRoute] string Id, CancellationToken cancellationToken)
+        {
+            var deleteProjectDetailsResult = await _taskServices.DeleteProjectDetails(Id, cancellationToken);
+
+            #region switch
+            return deleteProjectDetailsResult switch
+            {
+                { IsSuccess: true, Data: not null } => NoContent(),
+                { IsSuccess: false, Errors: not null } => HandleFailureResult(deleteProjectDetailsResult.Errors),
+                _ => BadRequest("Invalid some Fields")
+            };
+            #endregion
+        }
+
+
+        #endregion
+
         #region DeleteNickName
         [HttpDelete("DeleteNickName{Id}")]
         public async Task<IActionResult> DeleteNickName([FromRoute] string Id, CancellationToken cancellationToken)
