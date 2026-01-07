@@ -32,6 +32,8 @@ namespace Project.BLL.Abstraction
 
             #region Delete Task Mapping
             CreateMap<DeleteNickNameDTOs, NickName>().ReverseMap();
+            CreateMap<DeleteProjectDetailsDTOs, ProjectDetails>().ReverseMap();
+            CreateMap<DeleteTaskDetailsDTOs, TaskDetails>().ReverseMap();
 
             #endregion
 

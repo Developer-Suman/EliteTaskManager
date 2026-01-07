@@ -25,5 +25,7 @@ namespace Project.BLL.Services.Interface
         Task<Result<UpdateProjectDetailsDTOs>> UpdateProjectDetails(string ProjectDetailsId, UpdateProjectDetailsDTOs updateProjectDetailsDTOs);
         Task<Result<UpdateTaskDetailsDTOs>> UpdateTaskDetails(string TaskDetailsId, UpdateTaskDetailsDTOs updateTaskDetailsDTOs);
         Task<Result<DeleteNickNameDTOs>> DeleteNickName(string NickNameId, CancellationToken cancellationToken);
+        Task<Result<DeleteProjectDetailsDTOs>> DeleteProjectDetails(string ProjectDetailsId, CancellationToken cancellationToken);
+        Task<Result<DeleteTaskDetailsDTOs>> DeleteTaskDetails(string TaskDetailsId, CancellationToken cancellationToken);
     }
 }

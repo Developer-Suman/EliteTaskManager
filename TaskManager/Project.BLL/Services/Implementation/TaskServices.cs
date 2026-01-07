@@ -208,6 +208,52 @@ namespace Project.BLL.Services.Implementation
             }
         }
 
+        public async Task<Result<DeleteProjectDetailsDTOs>> DeleteProjectDetails(string ProjectDetailsId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var projectDetails = await _unitOfWork.Repository<ProjectDetails>().GetByIdAsync(ProjectDetailsId);
+                if (projectDetails is null)
+                {
+                    return Result<DeleteProjectDetailsDTOs>.Failure("NotFounds", "ProjectDetails cannot be Found");
+
+                }
+
+                projectDetails.IsDeleted = true;
+                _unitOfWork.Repository<ProjectDetails>().Update(projectDetails);
+                await _unitOfWork.SaveChangesAsync();
+                return Result<DeleteProjectDetailsDTOs>.Success(_mapper.Map<DeleteProjectDetailsDTOs>(projectDetails));
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occured while Deleting");
+            }
+        }
+
+        public async Task<Result<DeleteTaskDetailsDTOs>> DeleteTaskDetails(string TaskDetailsId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var taskDetails = await _unitOfWork.Repository<TaskDetails>().GetByIdAsync(TaskDetailsId);
+                if (taskDetails is null)
+                {
+                    return Result<DeleteTaskDetailsDTOs>.Failure("NotFounds", "TaskDetails cannot be Found");
+
+                }
+
+                taskDetails.IsDeleted = true;
+                _unitOfWork.Repository<TaskDetails>().Update(taskDetails);
+                await _unitOfWork.SaveChangesAsync();
+                return Result<DeleteTaskDetailsDTOs>.Success(_mapper.Map<DeleteTaskDetailsDTOs>(taskDetails));
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occured while Deleting");
+            }
+        }
+
         public async Task<Result<PagedResult<AllNickNameDTOs>>> GetAllNickName(PaginationDTOs paginationDTOs, CancellationToken cancellationToken)
         {
             try
